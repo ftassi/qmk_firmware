@@ -72,14 +72,44 @@
 # define RGUISPC RGUI(KC_SPC)
 # define RGUIENT RGUI(KC_ENT)
 # define RGUIBSPC RGUI(KC_BSPC)
+# define PREVWKS HYPR(KC_LEFT)
+# define NEXTWKS HYPR(KC_RIGHT)
+
+// Define a type for as many tap dance states as you need
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP
+} td_state_t;
+
+typedef struct {
+    bool is_press_action;
+    td_state_t state;
+} td_tap_t;
+
+enum {
+    ESC_L, // Our custom tap dance key; add any other tap dance keys to this enum 
+};
+
+// Declare the functions to be used with your tap dance key(s)
+
+// Function associated with all tap dances
+td_state_t cur_dance(qk_tap_dance_state_t *state);
+
+// Functions associated with individual tap dances
+void ql_finished(qk_tap_dance_state_t *state, void *user_data);
+void ql_reset(qk_tap_dance_state_t *state, void *user_data);
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_QWERTY] = LAYOUT(
 //┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
    KC_GRV  ,KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,                                            KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,KC_MINS ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
    KC_WMTAB,KC_Q    ,KC_W    ,KC_E    ,KC_R    ,KC_T    ,KC_LPRN ,                          KC_RPRN ,KC_Y    ,KC_U    ,KC_I    ,KC_O    ,KC_P    ,KC_WMEQL, 
-//├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_GESC ,KC_A    ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,KC_LBRC ,                          KC_RBRC ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,KC_AQUOT,
+//├────────┼───────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   TD(ESC_L),KC_A    ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,KC_LBRC ,                          KC_RBRC ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,KC_AQUOT,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
    KC_LSFT ,KC_Z    ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,KC_L3UP ,KC_CTDWM,        KC_CTHOM,KC_L3END,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RSFT ,
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
@@ -97,19 +127,20 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
    _______ ,_______ ,_______ ,_______ ,     _______ ,    KC_BSPC ,KC_DEL  ,        KC_ENT , KC_SPC  ,    _______ ,     _______ ,_______ ,_______ ,_______),
 //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
-	[2] = LAYOUT(
+	[_I3WM] = LAYOUT(
 //┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
    GUIESC  ,KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,                                            KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,RGUI(KC_S),
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
    _______ ,SGUI1   ,SGUI2,   SGUI3   ,SGUI4   ,SGUI5   ,KC_LPRN ,                          KC_RPRN ,SGUI6   ,SGUI7   ,SGUI8   ,SGUI9   ,SGUI0   , _______,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   XXXXXXX, RGUI1   ,RGUI2   ,RGUI3   ,RGUI4   ,RGUI5   ,HYPR(KC_LEFT),               HYPR(KC_RIGHT),RGUI6   ,RGUI7   ,RGUI8   ,RGUI9   ,RGUI0   , XXXXXXX,
+   TD(ESC_L),RGUI1 ,RGUI2   ,RGUI3   ,RGUI4   ,RGUI5   ,PREVWKS ,                          NEXTWKS ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RIGHT,XXXXXXX ,XXXXXXX ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
    KC_LSFT, RGUIC   ,RGUID   ,RGUIW   ,RGUIB   ,RGUII   ,SGUIZ   ,SGUIN   ,        RGUIN   ,RGUIR   ,RGUILEFT,RGUIDOWN,RGUIUP  ,RGUIRIGHT,SGUISLSH,KC_RSFT ,
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
    XXXXXXX ,XXXXXXX ,SGUIC   ,SGUIQ   ,     RGUIT   ,    SGUISPC ,RGUISPC ,        RGUIENT ,SGUIENT ,    RGUIBSPC,     XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX )
 //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
 };
+
 
 // Fix receivers led colors
 #undef red_led_off
@@ -145,6 +176,63 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define set_led_magenta red_led_on;  yel_led_off; blu_led_on
 #define set_led_cyan    red_led_off; yel_led_on;  blu_led_on
 #define set_led_white   red_led_on;  yel_led_on;  blu_led_on
+
+// Determine the current tap dance state
+td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (!state->pressed) return TD_SINGLE_TAP;
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) return TD_DOUBLE_TAP;
+    else return TD_UNKNOWN;
+}
+
+// Initialize tap structure associated with example tap dance key
+static td_tap_t ql_tap_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+// Functions that control what our tap dance key does
+void ql_finished(qk_tap_dance_state_t *state, void *user_data) {
+    ql_tap_state.state = cur_dance(state);
+    switch (ql_tap_state.state) {
+        case TD_SINGLE_TAP:
+            tap_code(KC_ESC);
+            break;
+        case TD_SINGLE_HOLD:
+            layer_on(_I3WM);
+            break;
+        case TD_DOUBLE_TAP:
+            // Check to see if the layer is already set
+            if (layer_state_is(_I3WM)) {
+                // If already set, then switch it off
+                layer_off(_I3WM);
+            } else {
+                // If not already set, then switch the layer on
+                layer_on(_I3WM);
+            }
+            break;
+	case TD_UNKNOWN:
+	    tap_code(KC_NO);
+	    break;
+	case TD_NONE:
+	    tap_code(KC_NO);
+	    break;
+    }
+}
+
+void ql_reset(qk_tap_dance_state_t *state, void *user_data) {
+    // If the key was held down and now is released then switch off the layer
+    if (ql_tap_state.state == TD_SINGLE_HOLD) {
+        layer_off(_I3WM);
+    }
+    ql_tap_state.state = TD_NONE;
+}
+
+// Associate our tap dance key with its functionality
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [ESC_L] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, ql_finished, ql_reset, 275)
+};
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {

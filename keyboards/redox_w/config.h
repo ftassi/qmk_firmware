@@ -64,3 +64,6 @@
     UCSR1B = _BV(TXEN1) | _BV(RXEN1); \
     /* 8-bit data */                  \
     UCSR1C = _BV(UCSZ11) | _BV(UCSZ10);
+
+//Tap dance
+#define TAPPING_TERM 175

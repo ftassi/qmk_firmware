@@ -30,3 +30,4 @@ UNICODE_ENABLE = YES 		# Unicode
 
 # # project specific files
 SRC += matrix.c serial_uart.c
+TAP_DANCE_ENABLE = yes
