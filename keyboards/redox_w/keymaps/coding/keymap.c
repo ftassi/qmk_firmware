@@ -19,74 +19,45 @@
  */
 #define _QWERTY 0
 #define _SYMB 1
-#define _I3WM 2
-#define _ADJUST 3
+#define _NUMP 2
+#define _NAV 3
+#define _I3WM 4
+#define _ADJUST 5
 
-# define KC_WMTAB LT(2,KC_TAB)
-# define KC_WMEQL LT(2,KC_EQL)
-# define KC_AQUOT RALT_T(KC_QUOT)
-# define KC_CTDWM LCA_T(KC_PGDN)
-# define KC_L3UP LT(3,KC_PGDN)
-# define KC_L3END LT(3,KC_END)
-# define KC_CTHOM LCA_T(KC_HOME)
-# define KC_CTLZ RCTL(KC_Z)
-# define KC_CTLX RCTL(KC_X)
-# define KC_CTLC RCTL(KC_C)
-# define KC_CTLV RCTL(KC_V)
-# define GUIESC RGUI(KC_ESC)
-# define SGUI1 SGUI(KC_1)
-# define SGUI2 SGUI(KC_2)
-# define SGUI3 SGUI(KC_3)
-# define SGUI4 SGUI(KC_4)
-# define SGUI5 SGUI(KC_5)
-# define SGUI6 SGUI(KC_6)
-# define SGUI7 SGUI(KC_7)
-# define SGUI8 SGUI(KC_8)
-# define SGUI9 SGUI(KC_9)
-# define SGUI0 SGUI(KC_0)
-# define SGUIS SGUI(KC_S)
-# define SGUIQ SGUI(KC_Q)
-# define SGUIC SGUI(KC_C)
-# define SGUIN SGUI(KC_N)
-# define SGUIZ SGUI(KC_Z)
-# define SGUIENT SGUI(KC_ENT)
-# define SGUISPC SGUI(KC_SPC)
-# define SGUISLSH SGUI(KC_SLSH)
-# define RGUI1 RGUI(KC_1)
-# define RGUI2 RGUI(KC_2)
-# define RGUI3 RGUI(KC_3)
-# define RGUI4 RGUI(KC_4)
-# define RGUI5 RGUI(KC_5)
-# define RGUI6 RGUI(KC_6)
-# define RGUI7 RGUI(KC_7)
-# define RGUI8 RGUI(KC_8)
-# define RGUI9 RGUI(KC_9)
-# define RGUI0 RGUI(KC_0)
-# define RGUIC RGUI(KC_C)
-# define RGUID RGUI(KC_D)
-# define RGUIW RGUI(KC_W)
-# define RGUIB RGUI(KC_B)
-# define RGUII RGUI(KC_I)
-# define RGUILEFT RGUI(KC_LEFT)
-# define RGUIRIGHT RGUI(KC_RIGHT)
-# define RGUIUP RGUI(KC_UP)
-# define RGUIDOWN RGUI(KC_DOWN)
-# define RGUIN RGUI(KC_N)
-# define RGUIR RGUI(KC_R)
-# define RGUIT RGUI(KC_T)
-# define RGUISPC RGUI(KC_SPC)
-# define RGUIENT RGUI(KC_ENT)
-# define RGUIBSPC RGUI(KC_BSPC)
-# define PREVWKS HYPR(KC_LEFT)
-# define NEXTWKS HYPR(KC_RIGHT)
+enum my_keycodes {
+    SYMBOL = SAFE_RANGE,
+    NUMPAD,
+};
 
-// Define a type for as many tap dance states as you need
+#define ESC_CTL CTL_T(KC_ESC)
+#define QUOT_CTL RCTL_T(KC_QUOT)
+#define TAB_SFT SFT_T(KC_TAB)
+#define PIPE S(KC_PIPE)
+//I3wm KC
+#define PREV_WS HYPR(KC_LEFT)
+#define NEXT_WS HYPR(KC_RIGHT)
+#define WS(kc) (G((kc)))
+#define APP G(KC_SPC)
+#define CMD G(S(KC_SPC))
+#define NAME G(S(KC_Z))
+#define BROWS G(S(KC_ENT))
+#define TERM G(KC_ENT)
+#define ORIENT G(KC_BSPC)
+#define TOGGLE G(KC_T)
+#define T_FULL G(KC_F)
+#define T_FLOAT G(S(KC_F))
+#define M_SCRAT G(C(KC_M))
+#define SCRAT G(C(KC_A))
+
 typedef enum {
     TD_NONE,
     TD_UNKNOWN,
-    TD_SINGLE_TAP,
     TD_SINGLE_HOLD,
-    TD_DOUBLE_TAP
+    TD_SINGLE_TAP,
+    TD_DOUBLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_TRIPLE_HOLD,
+    TD_TRIPLE_TAP,
 } td_state_t;
 
 typedef struct {
@@ -95,57 +66,113 @@ typedef struct {
 } td_tap_t;
 
 enum {
-    ESC_L, // Our custom tap dance key; add any other tap dance keys to this enum
+    SCLN_I3WM,
+    BROWSER_TERMINAL,
 };
 
-// Declare the functions to be used with your tap dance key(s)
 
-// Function associated with all tap dances
 td_state_t cur_dance(qk_tap_dance_state_t *state);
 
-// Functions associated with individual tap dances
-void ql_finished(qk_tap_dance_state_t *state, void *user_data);
-void ql_reset(qk_tap_dance_state_t *state, void *user_data);
+void semicolon_finished(qk_tap_dance_state_t *state, void *user_data);
+void semicolon_reset(qk_tap_dance_state_t *state, void *user_data);
+void broterm_finished(qk_tap_dance_state_t *state, void *user_data);
+void broterm_reset(qk_tap_dance_state_t *state, void *user_data);
 
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [BROWSER_TERMINAL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, broterm_finished, broterm_reset),
+    [SCLN_I3WM] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, semicolon_finished, semicolon_reset, 300),
+};
+
+#define SPACE TD(TD_SPACE)
+#define BSPC TD(TD_BSPC)
+#define SCLN_I3 TD(SCLN_I3WM)
+#define BRO_TER TD(BROWSER_TERMINAL)
+
+void temporary_activate_layer(uint16_t layer, keyrecord_t *record){
+    if(record->event.pressed) layer_on(layer);
+    else layer_off(layer);
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record){
+    switch(keycode) {
+        case SYMBOL:
+            temporary_activate_layer(_SYMB, record);
+            update_tri_layer(_SYMB, _NUMP, _NAV);
+            return false;
+            break;
+        case NUMPAD:
+            temporary_activate_layer(_NUMP, record);
+            update_tri_layer(_SYMB, _NUMP, _NAV);
+            return false;
+            break;
+        default:
+            return true;
+    }
+}
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[_QWERTY] = LAYOUT(
 //┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
-   KC_GRV  ,KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,                                            KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,KC_MINS ,
+   XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,                                            XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_TAB  ,KC_Q    ,KC_W    ,KC_E    ,KC_R    ,KC_T    ,KC_LPRN ,                          KC_RPRN ,KC_Y    ,KC_U    ,KC_I    ,KC_O    ,KC_P    ,KC_EQL  ,
+   KC_TILDE,KC_Q    ,KC_W    ,KC_E    ,KC_R    ,KC_T    ,XXXXXXX ,                          XXXXXXX ,KC_Y    ,KC_U    ,KC_I    ,KC_O    ,KC_P    ,KC_EQL  ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_ESC  ,KC_A    ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,KC_LBRC ,                          KC_RBRC ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,KC_AQUOT,
+   ESC_CTL ,KC_A    ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,XXXXXXX ,                          XXXXXXX ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,QUOT_CTL,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_RALT ,KC_Z    ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,        ,        ,                ,        ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RALT ,
+   KC_LCTL ,RALT_T(KC_Z),KC_X,KC_C    ,KC_V    ,KC_B    ,XXXXXXX ,XXXXXXX ,        XXXXXXX ,XXXXXXX ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RCTL ,
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-           ,        ,        ,        ,    MO(_SYMB),    KC_SFT  ,        ,                ,KC_SFT  ,   MO(_SYMB),     KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RIGHT),
+   XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,     NUMPAD  ,    TAB_SFT , KC_ENT ,        KC_BSPC, KC_SPACE,     SYMBOL ,     XXXXXXX ,XXXXXXX , XXXXXXX, XXXXXXX),
 //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
+
 	[_SYMB] = LAYOUT(
-//┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
+//┌────────┬────────┬────────┬────────┬────────┬────────┐                                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
    _______ ,KC_F1   ,KC_F2   ,KC_F3   ,KC_F4   ,KC_F5   ,                                            KC_F6   ,KC_F7   ,KC_F8   ,KC_F9   ,KC_F10  ,_______ ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,KC_LPRN ,                          KC_RPRN ,KC_PMNS ,KC_UNDS ,KC_LT   ,KC_GT   ,KC_QUES ,_______ ,
+   _______ ,KC_TILDE,KC_ASTR ,KC_AT   ,KC_BSLS ,KC_LPRN ,_______ ,                          _______ ,KC_RPRN ,KC_EXLM ,KC_PERC ,KC_PLUS ,_______ ,_______ ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_TILD ,KC_EXLM ,KC_AT   ,KC_HASH ,KC_DLR  ,KC_PERC ,KC_LCBR ,                          KC_RCBR ,KC_CIRC ,KC_AMPR ,KC_ASTR ,KC_PIPE  ,KC_COMM ,KC_DQUO,
+   _______ ,KC_MINS ,KC_EQL  ,KC_DLR  ,KC_GT   ,KC_LBRC ,_______ ,                          _______ ,KC_RBRC ,KC_LT   ,KC_COMM ,KC_DOT  ,KC_UNDS ,_______ ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,KC_PSLS ,KC_BSLS ,_______ ,_______ ,KC_DOT  ,_______ ,
+   _______ ,KC_GRV  ,KC_AMPR ,PIPE    ,KC_SLSH ,KC_LCBR ,_______ ,_______ ,        _______ ,_______ ,KC_RCBR ,KC_CIRC ,KC_HASH ,KC_COLON,KC_QUES ,_______ ,
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-   _______ ,_______ ,_______ ,_______ ,     _______ ,    KC_BSPC ,KC_DEL  ,        KC_ENT , KC_SPC  ,    _______ ,     _______ ,_______ ,_______ ,_______),
+   _______ ,_______ ,_______ ,MO(_NAV),     _______ ,   S(KC_TAB), KC_ENT ,        KC_DEL  ,KC_SPACE,    _______ ,     MO(_NAV),_______ ,_______ ,_______ ),
 //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
+    [_NUMP] = LAYOUT(
+//┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
+   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                                            _______ ,_______ ,KC_PEQL ,KC_PSLS ,KC_PAST ,_______ ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   KC_LPRN ,KC_BSLS ,KC_TILD ,KC_ASTR ,KC_AMPR ,S(KC_F) ,_______ ,                          _______ ,S(KC_C) ,KC_7    ,KC_8    ,KC_9    ,KC_PMNS ,KC_RPRN ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   KC_LBRC ,KC_PIPE ,KC_CIRC ,KC_PERC ,KC_DLR  ,S(KC_E) ,_______ ,                          _______ ,S(KC_B) ,KC_4    ,KC_5    ,KC_6    ,KC_PLUS ,KC_RBRC ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+ S(KC_LBRC),_______ ,KC_EXLM ,KC_AT   ,KC_HASH ,S(KC_D) ,_______ , _______,        _______ , _______,S(KC_A) ,KC_1    ,KC_2    ,KC_3    ,KC_ENT  ,S(KC_RBRC),
+//├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
+   _______ ,_______ ,_______ ,KC_PCMM ,     _______ ,    _______ , _______,        _______ , _______,    _______ ,     KC_0    ,KC_DOT  ,_______ ,_______ ),
+//└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
+    [_NAV] = LAYOUT(
+//┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
+   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                                            _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                          _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   _______ ,_______ ,KC_HOME ,KC_PGDN ,KC_PGUP ,KC_END  ,_______ ,                          _______ ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT ,_______ ,_______ ,
+//├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
+   _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
+//├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
+   _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,_______ ,        _______ ,_______ ,    _______ ,     _______ ,_______ ,_______ ,_______ ),
+//└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
+// select container still missing
 	[_I3WM] = LAYOUT(
 //┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
-   GUIESC  ,KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,                                            KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,RGUI(KC_S),
+   _______ ,KC_1    ,KC_2    ,KC_3    ,KC_4    ,KC_5    ,                                            KC_6    ,KC_7    ,KC_8    ,KC_9    ,KC_0    ,RGUI(KC_S),
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   _______ ,SGUI1   ,SGUI2,   SGUI3   ,SGUI4   ,SGUI5   ,KC_LPRN ,                          KC_RPRN ,SGUI6   ,SGUI7   ,SGUI8   ,SGUI9   ,SGUI0   , _______,
+  G(KC_TAB),WS(KC_6),WS(KC_7),WS(KC_8),WS(KC_9),WS(KC_0),_______ ,                          _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   TD(ESC_L),RGUI1 ,RGUI2   ,RGUI3   ,RGUI4   ,RGUI5   ,PREVWKS ,                          NEXTWKS ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RIGHT,XXXXXXX ,XXXXXXX ,
+ G(S(KC_Q)),WS(KC_1),WS(KC_2),WS(KC_3),WS(KC_4),WS(KC_5),PREV_WS ,                          NEXT_WS , G(KC_H),G(KC_J) ,G(KC_K) ,G(KC_L) ,_______ ,_______,
 //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-   KC_LSFT, RGUIC   ,RGUID   ,RGUIW   ,RGUIB   ,RGUII   ,SGUIZ   ,SGUIN   ,        RGUIN   ,RGUIR   ,RGUILEFT,RGUIDOWN,RGUIUP  ,RGUIRIGHT,SGUISLSH,KC_RSFT ,
+   _______ ,_______ ,_______ ,_______ ,SCRAT   ,M_SCRAT , CMD    , NAME   ,        T_FULL  ,T_FLOAT ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
 //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-   XXXXXXX ,XXXXXXX ,SGUIC   ,SGUIQ   ,     RGUIT   ,    SGUISPC ,RGUISPC ,        RGUIENT ,SGUIENT ,    RGUIBSPC,     XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX )
+   _______ ,_______ ,_______ ,_______ ,     TOGGLE  ,    KC_LSFT , APP    ,        BRO_TER ,KC_RSFT ,    ORIENT  ,     _______ ,_______ ,_______ ,_______ ),
 //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
 };
-
 
 // Fix receivers led colors
 #undef red_led_off
@@ -182,63 +209,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 #define set_led_cyan    red_led_off; yel_led_on;  blu_led_on
 #define set_led_white   red_led_on;  yel_led_on;  blu_led_on
 
-// Determine the current tap dance state
-td_state_t cur_dance(qk_tap_dance_state_t *state) {
-    if (state->count == 1) {
-        if (!state->pressed) return TD_SINGLE_TAP;
-        else return TD_SINGLE_HOLD;
-    } else if (state->count == 2) return TD_DOUBLE_TAP;
-    else return TD_UNKNOWN;
-}
-
-// Initialize tap structure associated with example tap dance key
-static td_tap_t ql_tap_state = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
-
-// Functions that control what our tap dance key does
-void ql_finished(qk_tap_dance_state_t *state, void *user_data) {
-    ql_tap_state.state = cur_dance(state);
-    switch (ql_tap_state.state) {
-        case TD_SINGLE_TAP:
-            tap_code(KC_ESC);
-            break;
-        case TD_SINGLE_HOLD:
-            layer_on(_I3WM);
-            break;
-        case TD_DOUBLE_TAP:
-            // Check to see if the layer is already set
-            if (layer_state_is(_I3WM)) {
-                // If already set, then switch it off
-                layer_off(_I3WM);
-            } else {
-                // If not already set, then switch the layer on
-                layer_on(_I3WM);
-            }
-            break;
-	case TD_UNKNOWN:
-	    tap_code(KC_NO);
-	    break;
-	case TD_NONE:
-	    tap_code(KC_NO);
-	    break;
-    }
-}
-
-void ql_reset(qk_tap_dance_state_t *state, void *user_data) {
-    // If the key was held down and now is released then switch off the layer
-    if (ql_tap_state.state == TD_SINGLE_HOLD) {
-        layer_off(_I3WM);
-    }
-    ql_tap_state.state = TD_NONE;
-}
-
-// Associate our tap dance key with its functionality
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [ESC_L] = ACTION_TAP_DANCE_FN_ADVANCED_TIME(NULL, ql_finished, ql_reset, 275)
-};
-
 layer_state_t layer_state_set_user(layer_state_t state) {
     switch (get_highest_layer(state)) {
         case _QWERTY:
@@ -248,13 +218,76 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 	    set_led_yellow;
             break;
         case _I3WM:
-	    set_led_red;
+	    set_led_magenta;
             break;
-        case 3:
+        case _NAV:
 	    set_led_blue;
+            break;
+        case _NUMP:
+	    set_led_red;
             break;
         default:
             break;
     }
   return state;
 };
+
+td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    if(state->count == 1) {
+        if(state->pressed) return TD_SINGLE_HOLD;
+        else return TD_SINGLE_TAP;
+    } else if (state->count == 2) {
+        if(state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
+    } else if (state->count == 3) {
+        if(state->pressed) return TD_TRIPLE_HOLD;
+        else return TD_TRIPLE_TAP;
+    }
+
+    return TD_UNKNOWN;
+}
+
+static td_tap_t semicolon_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+static td_tap_t broterm_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+void semicolon_finished(qk_tap_dance_state_t *state, void *user_data) {
+    semicolon_state.state = cur_dance(state);
+    switch(semicolon_state.state) {
+        case TD_SINGLE_TAP: tap_code(KC_SCLN); break;
+        case TD_SINGLE_HOLD: layer_on(_I3WM); break;
+        case TD_DOUBLE_TAP: layer_invert(_I3WM); break;
+        default: break;
+    }
+}
+
+void semicolon_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch(semicolon_state.state) {
+        case TD_SINGLE_HOLD: layer_off(_I3WM); break;
+        case TD_DOUBLE_HOLD: layer_off(_I3WM); break;
+        default: break;
+    }
+    semicolon_state.state = TD_NONE;
+}
+void broterm_finished(qk_tap_dance_state_t *state, void *user_data) {
+    broterm_state.state = cur_dance(state);
+    switch(broterm_state.state) {
+        case TD_SINGLE_TAP: register_code16(G(KC_ENT)) ; break;
+        case TD_DOUBLE_TAP: register_code16(G(S(KC_ENT))); break;
+        default: break;
+    }
+}
+
+void broterm_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch(broterm_state.state) {
+        case TD_SINGLE_TAP: unregister_code16(G(KC_ENT)) ; break;
+        case TD_DOUBLE_TAP: unregister_code16(G(S(KC_ENT))); break;
+        default: break;
+    }
+    broterm_state.state = TD_NONE;
+}
