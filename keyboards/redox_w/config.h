@@ -67,4 +67,6 @@
 
 //Tap dance
 #define TAPPING_TERM 250
+#define IGNORE_MOD_TAP_INTERRUPT
+#define TAPPING_FORCE_HOLD
 //#define COMBO_COUNT 1
