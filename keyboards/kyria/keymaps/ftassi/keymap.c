@@ -19,7 +19,7 @@ enum layers {
     _QWERTY = 0,
     _NUMBERS,
     _SYMBOL,
-    _ADJUST
+    _NAV
 };
 
 #define BACK A(S(KC_LEFT))
@@ -100,7 +100,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_ADJUST] = LAYOUT(
+    [_NAV] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                     BACK   , _______, _______, FWD    , _______, _______,
       _______, _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, _______,
       _______, _______, _______, _______, KC_MUTE, KC_VOLD, _______, _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______, _______,
@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _SYMBOL, _NUMBERS, _ADJUST);
+    return update_tri_layer_state(state, _SYMBOL, _NUMBERS, _NAV);
 }
 
 #ifdef OLED_DRIVER_ENABLE
@@ -177,8 +177,8 @@ static void render_status(void) {
         case _NUMBERS:
             oled_write_P(PSTR("Numbers\n"), false);
             break;
-        case _ADJUST:
-            oled_write_P(PSTR("Adjust\n"), false);
+        case _NAV:
+            oled_write_P(PSTR("Navigation\n"), false);
             break;
         default:
             oled_write_P(PSTR("Undefined\n"), false);
