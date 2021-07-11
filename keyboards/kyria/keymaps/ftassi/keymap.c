@@ -17,8 +17,8 @@
 
 enum layers {
     _QWERTY = 0,
-    _LOWER,
-    _RAISE,
+    _SYMBOL,
+    _NUMBERS,
     _ADJUST
 };
 
@@ -37,14 +37,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|LShift|  |LShift|LShift|   N  |   M  | ,  < | . >  | /  ? |  - _   |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        | GUI  | Del  | Enter| Space| Esc  |  | Enter| Space| Tab  | Bksp | AltGr|
- *                        |      |      | Alt  | Raise| Lower|  | Lower| Raise|      |      |      |
+ *                        |      |      | Alt  | Num  |Lower |   | Lower| Num  |     |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
-      LT(_RAISE, KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
+      LT(_NUMBERS, KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
       MT(MOD_LCTL, KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
       KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT,   KC_LSFT, KC_LSFT, KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_MINS,
-              KC_LGUI, KC_DEL, MT(MOD_LALT, KC_ENT), LT(_RAISE, KC_SPC), LT(_LOWER, KC_ESC), LT(_LOWER, KC_ENT), LT(_RAISE, KC_SPC), KC_TAB,  KC_BSPC, KC_RALT
+              KC_LGUI, KC_DEL, MT(MOD_LALT, KC_ENT), LT(_NUMBERS, KC_SPC), LT(_SYMBOL, KC_ESC), LT(_SYMBOL, KC_ENT), LT(_NUMBERS, KC_SPC), KC_TAB,  KC_BSPC, KC_RALT
     ),
 /*
  * Lower Layer: Symbols
@@ -60,7 +60,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_LOWER] = LAYOUT(
+    [_SYMBOL] = LAYOUT(
       _______, KC_EXLM, KC_AT,   KC_LCBR, KC_RCBR, KC_PIPE,                                     _______, _______, KC_LT  , KC_GT  , _______, KC_BSLS,
       _______, KC_HASH, KC_DLR,  KC_LPRN, KC_RPRN, KC_GRV,                                      KC_PLUS, KC_MINS, KC_SLSH, KC_ASTR, KC_PERC, KC_QUOT,
       _______, KC_PERC, KC_CIRC, KC_LBRC, KC_RBRC, KC_TILD, _______, _______, _______, _______, KC_AMPR, KC_EQL,  KC_COMM, KC_DOT,  KC_SLSH, KC_MINS,
@@ -80,7 +80,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        |      |      |      |      |      |  |      |      |      |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
-    [_RAISE] = LAYOUT(
+    [_NUMBERS] = LAYOUT(
       _______,  KC_1  ,  KC_2  ,  KC_3  ,  KC_4  ,  KC_5  ,                                     KC_PSLS,  KC_7  ,  KC_8  ,  KC_9  , KC_PMNS, _______,
       _______,  KC_6  ,  KC_7  ,  KC_8  ,  KC_9  ,  KC_0  ,                                     KC_PAST,  KC_4  ,  KC_5  ,  KC_6  , KC_PLUS, KC_SPC ,
       _______, _______, _______, _______, _______, _______, XXXXXXX, _______, _______, XXXXXXX,  KC_0  ,  KC_1  ,  KC_2  ,  KC_3  , KC_PEQL, KC_ENT ,
@@ -129,7 +129,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-    return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+    return update_tri_layer_state(state, _SYMBOL, _NUMBERS, _ADJUST);
 }
 
 #ifdef OLED_DRIVER_ENABLE
@@ -171,11 +171,11 @@ static void render_status(void) {
         case _QWERTY:
             oled_write_P(PSTR("Default\n"), false);
             break;
-        case _LOWER:
-            oled_write_P(PSTR("Lower\n"), false);
+        case _SYMBOL:
+            oled_write_P(PSTR("Symbols\n"), false);
             break;
-        case _RAISE:
-            oled_write_P(PSTR("Raise\n"), false);
+        case _NUMBERS:
+            oled_write_P(PSTR("Numbers\n"), false);
             break;
         case _ADJUST:
             oled_write_P(PSTR("Adjust\n"), false);
