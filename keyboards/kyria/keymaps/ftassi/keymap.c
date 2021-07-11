@@ -17,8 +17,8 @@
 
 enum layers {
     _QWERTY = 0,
-    _SYMBOL,
     _NUMBERS,
+    _SYMBOL,
     _ADJUST
 };
 
