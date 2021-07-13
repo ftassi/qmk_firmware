@@ -19,11 +19,54 @@ enum layers {
     _QWERTY = 0,
     _NUMBERS,
     _SYMBOL,
-    _NAV
+    _NAV,
+    _I3WM
 };
 
 #define BACK A(S(KC_LEFT))
 #define FWD A(S(KC_RIGHT))
+//I3wm keycodes
+#define NEXT_WS G(S(KC_O))
+#define RESIZE G(KC_R)
+#define SCRAT G(C(KC_A))
+#define MSCRAT G(C(KC_M))
+#define FLOAT G(S(KC_F))
+#define APP G(KC_SPC)
+#define CMD G(S(KC_SPC))
+#define NAME G(S(KC_Z))
+#define ORIENTATION G(KC_BSPC)
+#define FILES G(S(KC_N))
+
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_HOLD,
+    TD_SINGLE_TAP,
+    TD_DOUBLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_TRIPLE_HOLD,
+    TD_TRIPLE_TAP,
+} td_state_t;
+
+typedef struct {
+    bool is_press_action;
+    td_state_t state;
+} td_tap_t;
+
+enum {
+    BROWSER_TERMINAL,
+};
+
+td_state_t cur_dance(qk_tap_dance_state_t *state);
+
+void broterm_finished(qk_tap_dance_state_t *state, void *user_data);
+void broterm_reset(qk_tap_dance_state_t *state, void *user_data);
+
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [BROWSER_TERMINAL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, broterm_finished, broterm_reset),
+};
+
+#define BRO_TER TD(BROWSER_TERMINAL)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -42,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
     [_QWERTY] = LAYOUT(
       LT(_NUMBERS, KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
-      MT(MOD_LCTL, KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+      MT(MOD_LCTL, KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LT(_I3WM, KC_QUOT),
       KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT, XXXXXXX, XXXXXXX, KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_MINS,
               MO(_NAV), KC_DEL, KC_LGUI, LT(_NUMBERS, KC_ESC), LT(_SYMBOL, KC_ENT), LT(_SYMBOL, KC_BSPC), LT(_NUMBERS, KC_SPC), MT(MOD_LALT, KC_TAB),  KC_BSPC, KC_RALT
     ),
@@ -106,6 +149,26 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       _______, _______, _______, _______, KC_MUTE, KC_VOLD, _______, _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
     ),
+// /*
+//  * I3wm Layer
+//  *
+//  * ,-------------------------------------------.                              ,-------------------------------------------.
+//  * |        | WS1  | WS2  | WS3  | WS4  | WS5  |                              |      |      |      |      |      |        |
+//  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
+//  * |Monitor | WS6  | WS7  | WS8  | WS9  | WS0  |                              | Left | Down | Up   | Right|      |        |
+//  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
+//  * |        |      |      |      |      |      |      | Name |  | CMD  |      |      |      |      |      |      |        |
+//  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
+//  *                        |      |Resize|Scratc|Files | App  |  |Brows |Orient|Move  |Float |      |
+//  *                        |      |      |      |      |      |  |Term  |      |Scratc|      |      |
+//  *                        `----------------------------------'  `----------------------------------'
+//  */
+     [_I3WM] = LAYOUT(
+       _______, G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             _______, _______, _______, _______, _______, _______,
+       NEXT_WS, G(KC_5), G(KC_6), G(KC_7), G(KC_8), G(KC_9),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, _______,
+       _______, _______, _______, _______, _______, _______, _______, NAME, CMD, _______, _______, _______, _______, _______, _______, _______,
+                                  _______, RESIZE, SCRAT, FILES, APP, BRO_TER, ORIENTATION, MSCRAT, FLOAT, G(S(KC_Q))
+     ),
 // /*
 //  * Layer template
 //  *
@@ -176,6 +239,9 @@ static void render_status(void) {
         case _NAV:
             oled_write_P(PSTR("Navigation\n"), false);
             break;
+        case _I3WM:
+            oled_write_P(PSTR("I3wm\n"), false);
+            break;
         default:
             oled_write_P(PSTR("Undefined\n"), false);
     }
@@ -217,3 +283,41 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
+
+td_state_t cur_dance(qk_tap_dance_state_t *state) {
+    if(state->count == 1) {
+        if(state->pressed) return TD_SINGLE_HOLD;
+        else return TD_SINGLE_TAP;
+    } else if (state->count == 2) {
+        if(state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
+    } else if (state->count == 3) {
+        if(state->pressed) return TD_TRIPLE_HOLD;
+        else return TD_TRIPLE_TAP;
+    }
+
+    return TD_UNKNOWN;
+}
+
+static td_tap_t broterm_state = {
+    .is_press_action = true,
+    .state = TD_NONE
+};
+
+void broterm_finished(qk_tap_dance_state_t *state, void *user_data) {
+    broterm_state.state = cur_dance(state);
+    switch(broterm_state.state) {
+        case TD_SINGLE_TAP: register_code16(G(KC_ENT)) ; break;
+        case TD_DOUBLE_TAP: register_code16(G(S(KC_ENT))); break;
+        default: break;
+    }
+}
+
+void broterm_reset(qk_tap_dance_state_t *state, void *user_data) {
+    switch(broterm_state.state) {
+        case TD_SINGLE_TAP: unregister_code16(G(KC_ENT)) ; break;
+        case TD_DOUBLE_TAP: unregister_code16(G(S(KC_ENT))); break;
+        default: break;
+    }
+    broterm_state.state = TD_NONE;
+}
