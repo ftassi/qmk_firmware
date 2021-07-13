@@ -20,7 +20,8 @@ enum layers {
     _NUMBERS,
     _SYMBOL,
     _NAV,
-    _I3WM
+    _I3WM,
+    _ADJUST
 };
 
 #define BACK A(S(KC_LEFT))
@@ -77,7 +78,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |Ctrl/BS |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |' "/I3wm|
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|      |  |      |LShift|   N  |   M  | ,  < | . >  | /  ? |  - _   |
+ * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|Adjust|  |Adjust|LShift|   N  |   M  | ,  < | . >  | /  ? |  - _   |
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        | Nav  | Del  | GUI  | Esc  | Enter|  | Bksp | Space| Tab  | AltGr| CTRL |
  *                        |      |      | Numb | Alt  |      |  |      |      | Symb |      |      |
@@ -86,8 +87,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
       LT(_NUMBERS, KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_PIPE,
       MT(MOD_LCTL, KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LT(_I3WM, KC_QUOT),
-      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT, XXXXXXX, XXXXXXX, KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_MINS,
-              MO(_NAV), KC_DEL, LT(_NUMBERS, KC_LGUI), MT(MOD_LALT, KC_ESC), KC_ENT, KC_BSPC, KC_SPC, LT(_SYMBOL, KC_TAB), KC_RALT, MOD_RCTL
+      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT, MO(_ADJUST), MO(_ADJUST), KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_MINS,
+              MO(_NAV), KC_DEL, LT(_NUMBERS, KC_LGUI), MT(MOD_LALT, KC_ESC), KC_ENT, KC_BSPC, KC_SPC, LT(_SYMBOL, KC_TAB), KC_RALT, MOD_LCTL
     ),
 /*
  * Lower Layer: Symbols
@@ -169,6 +170,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
        _______, _______, _______, _______, _______, _______, _______, NAME, CMD, _______, _______, _______, _______, _______, _______, _______,
                                   _______, RESIZE, SCRAT, FILES, APP, BRO_TER, ORIENTATION, MSCRAT, FLOAT, G(S(KC_Q))
      ),
+    [_ADJUST] = LAYOUT(
+      _______, _______, _______, _______, _______, _______,                                     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  _______,
+      _______, _______, RGB_SAI, RGB_HUI, RGB_VAI, _______,                                     _______, KC_F4,   KC_F5,   KC_F6,   KC_F11,  _______,
+      _______, _______, RGB_SAD, RGB_HUD, RGB_VAD, _______, _______, _______, _______, _______, _______, KC_F1,   KC_F2,   KC_F3,   KC_F12,  _______,
+                                 _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+    ),
 // /*
 //  * Layer template
 //  *
@@ -241,6 +248,9 @@ static void render_status(void) {
             break;
         case _I3WM:
             oled_write_P(PSTR("I3wm\n"), false);
+            break;
+        case _ADJUST:
+            oled_write_P(PSTR("Adjust\n"), false);
             break;
         default:
             oled_write_P(PSTR("Undefined\n"), false);
