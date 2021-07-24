@@ -140,7 +140,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  */
      [_I3WM] = LAYOUT(
        G(S(KC_Q)), G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             _______, _______, _______, _______, _______, _______,
-       NEXT_WS, G(KC_5), G(KC_6), G(KC_7), G(KC_8), G(KC_9),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, _______,
+       NEXT_WS, G(KC_6), G(KC_7), G(KC_8), G(KC_9), G(KC_0),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, _______,
        _______, _______, _______, _______, _______, _______, TERM, BROWSER, _______, _______, _______, _______, _______, _______, _______, _______,
                                   L_MODE, FILES, SCRAT   , APP , CMD    , RESIZE  , ORIENTATION, MSCRAT, FLOAT, FULL
      ),
