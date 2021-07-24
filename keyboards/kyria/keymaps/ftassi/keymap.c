@@ -33,42 +33,13 @@ enum layers {
 #define SCRAT G(C(KC_A))
 #define MSCRAT G(C(KC_M))
 #define FLOAT G(S(KC_F))
+#define TERM G(KC_ENT)
 #define APP G(KC_SPC)
+#define BROWSER G(S(KC_ENT))
 #define CMD G(S(KC_SPC))
 #define NAME G(S(KC_Z))
 #define ORIENTATION G(KC_BSPC)
 #define FILES G(S(KC_N))
-
-typedef enum {
-    TD_NONE,
-    TD_UNKNOWN,
-    TD_SINGLE_HOLD,
-    TD_SINGLE_TAP,
-    TD_DOUBLE_HOLD,
-    TD_DOUBLE_TAP,
-    TD_TRIPLE_HOLD,
-    TD_TRIPLE_TAP,
-} td_state_t;
-
-typedef struct {
-    bool is_press_action;
-    td_state_t state;
-} td_tap_t;
-
-enum {
-    BROWSER_TERMINAL,
-};
-
-td_state_t cur_dance(qk_tap_dance_state_t *state);
-
-void broterm_finished(qk_tap_dance_state_t *state, void *user_data);
-void broterm_reset(qk_tap_dance_state_t *state, void *user_data);
-
-qk_tap_dance_action_t tap_dance_actions[] = {
-    [BROWSER_TERMINAL] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, broterm_finished, broterm_reset),
-};
-
-#define BRO_TER TD(BROWSER_TERMINAL)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -159,17 +130,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
 //  * |Monitor | WS6  | WS7  | WS8  | WS9  | WS0  |                              | Left | Down | Up   | Right|      |        |
 //  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
-//  * |        |      |      |      |      |      |      | Name |  | CMD  |      |      |      |      |      |      |        |
+//  * |        |      |      |      |      |      | Term | Brow |  |      |      |      |      |      |      |      |        |
 //  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
-//  *                        |      |Resize|Scratc|Brows | App  |  | Files|Orient|Move  |Float |      |
-//  *                        |      |      |      |Term  |      |  |      |      |Scratc|      |      |
+//  *                        |      |Resize|Scratc| App  | Cmd  |  | Files|Orient|Move  |Float |      |
+//  *                        |      |      |      |      |      |  |      |      |Scratc|      |      |
 //  *                        `----------------------------------'  `----------------------------------'
 //  */
      [_I3WM] = LAYOUT(
        G(S(KC_Q)), G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             _______, _______, _______, _______, _______, _______,
        NEXT_WS, G(KC_5), G(KC_6), G(KC_7), G(KC_8), G(KC_9),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, _______,
-       _______, _______, _______, _______, _______, _______, _______, NAME, CMD, _______, _______, _______, _______, _______, _______, _______,
-                                  _______, RESIZE, SCRAT, BRO_TER, APP, FILES, ORIENTATION, MSCRAT, FLOAT, _______
+       _______, _______, _______, _______, _______, _______, TERM, BROWSER, _______, _______, _______, _______, _______, _______, _______, _______,
+                                  _______, RESIZE, SCRAT   , APP , CMD    , FILES  , ORIENTATION, MSCRAT, FLOAT, _______
      ),
     [_ADJUST] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  _______,
@@ -298,41 +269,3 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
-
-td_state_t cur_dance(qk_tap_dance_state_t *state) {
-    if(state->count == 1) {
-        if(state->pressed) return TD_SINGLE_HOLD;
-        else return TD_SINGLE_TAP;
-    } else if (state->count == 2) {
-        if(state->pressed) return TD_DOUBLE_HOLD;
-        else return TD_DOUBLE_TAP;
-    } else if (state->count == 3) {
-        if(state->pressed) return TD_TRIPLE_HOLD;
-        else return TD_TRIPLE_TAP;
-    }
-
-    return TD_UNKNOWN;
-}
-
-static td_tap_t broterm_state = {
-    .is_press_action = true,
-    .state = TD_NONE
-};
-
-void broterm_finished(qk_tap_dance_state_t *state, void *user_data) {
-    broterm_state.state = cur_dance(state);
-    switch(broterm_state.state) {
-        case TD_SINGLE_TAP: register_code16(G(KC_ENT)) ; break;
-        case TD_DOUBLE_TAP: register_code16(G(S(KC_ENT))); break;
-        default: break;
-    }
-}
-
-void broterm_reset(qk_tap_dance_state_t *state, void *user_data) {
-    switch(broterm_state.state) {
-        case TD_SINGLE_TAP: unregister_code16(G(KC_ENT)) ; break;
-        case TD_DOUBLE_TAP: unregister_code16(G(S(KC_ENT))); break;
-        default: break;
-    }
-    broterm_state.state = TD_NONE;
-}
