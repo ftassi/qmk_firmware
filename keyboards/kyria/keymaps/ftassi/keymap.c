@@ -24,6 +24,7 @@ enum layers {
     _ADJUST
 };
 
+//code related back/fwd
 #define BACK A(S(KC_LEFT))
 #define FWD A(S(KC_RIGHT))
 //I3wm keycodes
