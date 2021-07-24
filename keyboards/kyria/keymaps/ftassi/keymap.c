@@ -40,6 +40,8 @@ enum layers {
 #define NAME G(S(KC_Z))
 #define ORIENTATION G(KC_BSPC)
 #define FILES G(S(KC_N))
+#define L_MODE G(KC_T)
+#define FULL G(KC_F)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 /*
@@ -132,15 +134,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
 //  * |        |      |      |      |      |      | Term | Brow |  |      |      |      |      |      |      |      |        |
 //  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
-//  *                        |      |Resize|Scratc| App  | Cmd  |  | Files|Orient|Move  |Float |      |
-//  *                        |      |      |      |      |      |  |      |      |Scratc|      |      |
+//  *                        |Layout|Files |Scratc| App  | Cmd  |  |Resize|Orient|Move  |Float |Full  |
+//  *                        |Mode  |      |      |      |      |  |      |      |Scratc|      |Screen|
 //  *                        `----------------------------------'  `----------------------------------'
 //  */
      [_I3WM] = LAYOUT(
        G(S(KC_Q)), G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             _______, _______, _______, _______, _______, _______,
        NEXT_WS, G(KC_5), G(KC_6), G(KC_7), G(KC_8), G(KC_9),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, _______,
        _______, _______, _______, _______, _______, _______, TERM, BROWSER, _______, _______, _______, _______, _______, _______, _______, _______,
-                                  _______, RESIZE, SCRAT   , APP , CMD    , FILES  , ORIENTATION, MSCRAT, FLOAT, _______
+                                  L_MODE, FILES, SCRAT   , APP , CMD    , RESIZE  , ORIENTATION, MSCRAT, FLOAT, FULL
      ),
     [_ADJUST] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  _______,
