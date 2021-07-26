@@ -271,3 +271,14 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     return true;
 }
 #endif
+
+uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode){
+    case LT(_NUMBERS, KC_TAB):
+      return TAPPING_TERM - 50;
+    case LT(_SYMBOL, KC_TAB):
+      return TAPPING_TERM - 50;
+    default:
+      return TAPPING_TERM;
+  }
+}
