@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include QMK_KEYBOARD_H
+#include "features/casemodes.h"
 
 enum layers {
     _QWERTY = 0,
@@ -24,6 +25,9 @@ enum layers {
     _ADJUST
 };
 
+enum custom_keycodes {
+    CAPSWRD = SAFE_RANGE,
+};
 //code related back/fwd
 #define BACK A(S(KC_LEFT))
 #define FWD A(S(KC_RIGHT))
@@ -52,7 +56,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |Ctrl/BS |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |Ctrl ' "|
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|Adjust|  | I3wm |LShift|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
+ * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|Adjust|  | I3wm |CAPSWRD|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        | Down | Del  | Tab  | Esc  | Enter|  | AltGr| Space| Tab  | Alt  |  Up  |
  *                        |      |      | Numb | GUI  |      |  |      |      | Symb |      |      |
@@ -61,7 +65,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_QWERTY] = LAYOUT(
       LALT_T(KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LALT_T(KC_BSLS),
       LCTL_T(KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LCTL_T(KC_QUOT),
-      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), MO(_ADJUST), OSL(_I3WM), KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
+      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), MO(_ADJUST), OSL(_I3WM), CAPSWRD, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
               KC_DOWN, KC_DEL, LT(_NUMBERS, KC_TAB), MT(MOD_LGUI, KC_ESC), KC_ENT, OSM(MOD_RALT), KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, KC_UP
     ),
 /*
@@ -281,4 +285,21 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     default:
       return TAPPING_TERM;
   }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    // Process case modes
+    if (!process_case_modes(keycode, record)) {
+        return false;
+    }
+
+    switch (keycode) {
+        case CAPSWRD:
+            if(record->event.pressed) {
+                enable_caps_word();
+            }
+            return false;
+        default:
+            return true;
+    }
 }
