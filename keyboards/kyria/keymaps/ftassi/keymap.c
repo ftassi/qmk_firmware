@@ -56,17 +56,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
  * |Ctrl/BS |   A  |   S  |  D   |   F  |   G  |                              |   H  |   J  |   K  |   L  | ;  : |Ctrl ' "|
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
- * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift|Adjust|  | I3wm |CAPSWRD|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
+ * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift| Lead |  | I3wm |CAPSWRD|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        | Down | Del  | Tab  | Esc  | Enter|  | AltGr| Space| Tab  | Alt  |  Up  |
- *                        |      |      | Numb | GUI  |      |  |      |      | Symb |      |      |
+ *                        |      |      | Numb | GUI  |      |  |      |      | Symb |      |Adjust|
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
       LALT_T(KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LALT_T(KC_BSLS),
       LCTL_T(KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LCTL_T(KC_QUOT),
-      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), MO(_ADJUST), OSL(_I3WM), CAPSWRD, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
-              KC_DOWN, KC_DEL, LT(_NUMBERS, KC_TAB), MT(MOD_LGUI, KC_ESC), KC_ENT, OSM(MOD_RALT), KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, KC_UP
+      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), KC_LEAD, OSL(_I3WM), CAPSWRD, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
+              KC_DOWN, KC_DEL, LT(_NUMBERS, KC_TAB), MT(MOD_LGUI, KC_ESC), KC_ENT, OSM(MOD_RALT), KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, LT(_ADJUST, KC_UP)
     ),
 /*
  * Lower Layer: Symbols
@@ -301,5 +301,21 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         default:
             return true;
+    }
+}
+
+LEADER_EXTERNS();
+
+void matrix_scan_user(void) {
+    LEADER_DICTIONARY() {
+        leading = false;
+        leader_end();
+
+        SEQ_ONE_KEY(KC_BSPC) {
+            enable_xcase_with(KC_UNDS);
+        }
+        SEQ_ONE_KEY(KC_LSFT) {
+            enable_xcase_with(OSM(MOD_LSFT));
+        }
     }
 }

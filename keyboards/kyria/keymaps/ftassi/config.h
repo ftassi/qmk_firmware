@@ -31,6 +31,7 @@
 #define IGNORE_MOD_TAP_INTERRUPT
 #define TAPPING_TERM 200
 #define TAPPING_TERM_PER_KEY
+#define LEADER_TIMEOUT 300
 
 // If you are using an Elite C rev3 on the slave side, uncomment the lines below:
 // #define SPLIT_USB_DETECT
