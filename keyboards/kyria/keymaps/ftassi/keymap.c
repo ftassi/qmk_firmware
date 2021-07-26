@@ -59,9 +59,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
-      MT(MOD_LALT, KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    MT(MOD_LALT, KC_BSLS),
-      MT(MOD_LCTL, KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, MT(MOD_LCTL, KC_QUOT),
-      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), MO(_ADJUST), OSL(_I3WM), KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, MT(MOD_RSFT, KC_MINS),
+      LALT_T(KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LALT_T(KC_BSLS),
+      LCTL_T(KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LCTL_T(KC_QUOT),
+      KC_LSFT,                 KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   OSM(MOD_LSFT), MO(_ADJUST), OSL(_I3WM), KC_LSFT, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
               KC_DOWN, KC_DEL, LT(_NUMBERS, KC_TAB), MT(MOD_LGUI, KC_ESC), KC_ENT, OSM(MOD_RALT), KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, KC_UP
     ),
 /*
