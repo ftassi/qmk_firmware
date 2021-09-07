@@ -28,9 +28,6 @@ enum layers {
 enum custom_keycodes {
     CAPSWRD = SAFE_RANGE,
 };
-//code related back/fwd
-#define BACK A(S(KC_LEFT))
-#define FWD A(S(KC_RIGHT))
 //I3wm keycodes
 #define NEXT_WS G(S(KC_O))
 #define RESIZE G(KC_R)
@@ -113,7 +110,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * Adjust Layer: Number keys, media, navigation
  *
  * ,-------------------------------------------.                              ,-------------------------------------------.
- * |        |      |      |      |      |      |                              | BACK |      |      | FWD  |      |        |
+ * |        |      |      |      |      |      |                              |      |      |      |      |      |        |
  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
 *  |        |      | Prev | Play | Next | VolUp|                              | Left | Down | Up   | Right|      | CapsLk |
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
@@ -124,7 +121,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                        `----------------------------------'  `----------------------------------'
  */
     [_NAV] = LAYOUT(
-      KC_MPLY, KC_VOLU, _______, _______, _______, _______,                                     BACK   , _______, _______, FWD    , _______, _______,
+      KC_MPLY, KC_VOLU, _______, _______, _______, _______,                                     _______ , _______, _______, _______  , _______, _______,
       KC_MPRV, KC_VOLD, KC_MS_L, KC_MS_U, KC_MS_D, KC_MS_R,                                     KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, _______, KC_CAPS,
       KC_MNXT, KC_MUTE, _______, _______, KC_BTN1, KC_BTN2, _______, _______, _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END , _______, _______,
                                  _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
