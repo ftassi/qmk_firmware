@@ -56,15 +56,15 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
  * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift| AltGr|  |LEADER|CAPSWRD|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
- *                        | Down | Del  | Tab  | Esc  | Enter|  | I3wm | Space| BS  | Alt  |  Up  |
- *                        |Adjust|      | Numb |      |      |  |      |      | Symb|      |      |
+ *                        | Down | Del  | Tab  | Esc  | Enter|  | I3wm | Space| Symb| Alt  |  Up  |
+ *                        |Adjust|      | Numb |      |      |  | BS   |      | Tab |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
       LALT_T(KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LALT_T(KC_BSLS),
       LCTL_T(KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LCTL_T(KC_QUOT),
       KC_LSFT, KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT, OSM(MOD_RALT) , KC_LEAD, CAPSWRD, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
-              LT(_ADJUST, KC_DOWN), KC_DEL, LT(_NUMBERS, KC_TAB), KC_ESC, KC_ENT, OSL(_I3WM) , KC_SPC, LT(_SYMBOL, KC_BSPC), KC_LALT, KC_UP
+              LT(_ADJUST, KC_DOWN), KC_DEL, LT(_NUMBERS, KC_TAB), KC_ESC, KC_ENT, LT(_I3WM, KC_BSPC) , KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, KC_UP
       ),
 /*
  * Lower Layer: Symbols
@@ -130,21 +130,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  * I3wm Layer
 //  *
 //  * ,-------------------------------------------.                              ,-------------------------------------------.
-//  * | Quit   | WS1  | WS2  | WS3  | WS4  | WS5  |                              |      |      |      |      |      | SLEEP  |
+//  * | Quit   | WS1  | WS2  | WS3  | WS4  | WS5  |                              |Resize|Orient|      |      |      | SLEEP  |
 //  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
 //  * |Monitor | WS6  | WS7  | WS8  | WS9  | WS0  |                              | Left | Down | Up   | Right|      |   ESC  |
 //  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
-//  * | Shift  |Rest  |      |      |      | Sett | Term | Brow |  |Resize|Orient|      |      |      |      |      |        |
+//  * | Shift  |Rest  |Files |L.mode|Scratc|      | Term | Brow |  |      |      |2Scrat|Float |Full  |      |      |   ?    |
 //  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
-//  *                        |Layout|Files |Scratc| App  | Cmd  |  |TOGGLE|      |Move  |Float |Full  |
-//  *                        |Mode  |      |      |      |      |  |LAYER |  ?   |Scratc|      |Screen|
+//  *                        |      |      | Sett | App  | Cmd  |  |      |      |      |      |      |
+//  *                        |      |      |      |      |      |  |      |      |      |      |      |
 //  *                        `----------------------------------'  `----------------------------------'
 //  */
      [_I3WM] = LAYOUT(
-       G(S(KC_Q)), G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             _______, _______, _______, _______, _______, SLEEP,
+       G(S(KC_Q)), G(KC_1), G(KC_2), G(KC_3), G(KC_4), G(KC_5),                             RESIZE, ORIENTATION, XXXXXXX, XXXXXXX, XXXXXXX, SLEEP,
        NEXT_WS, G(KC_6), G(KC_7), G(KC_8), G(KC_9), G(KC_0),                             G(KC_LEFT), G(KC_DOWN), G(KC_UP), G(KC_RIGHT), _______, KC_ESC,
-       KC_LSFT, G(C(KC_R)), _______, _______, _______, G(KC_C), TERM, BROWSER, RESIZE, ORIENTATION, _______, _______, _______, _______, _______, _______,
-                                  L_MODE, FILES, SCRAT   , APP , CMD    , TG(_I3WM) ,G(S(KC_QUES)), MSCRAT, FLOAT, FULL
+       KC_LSFT, G(C(KC_R)), FILES, L_MODE, SCRAT, XXXXXXX,  TERM, BROWSER, XXXXXXX, XXXXXXX, MSCRAT, FLOAT, FULL, XXXXXXX, XXXXXXX, G(S(KC_QUES)),
+                                  XXXXXXX,  XXXXXXX, G(KC_C), APP , CMD , XXXXXXX ,XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
      ),
     [_ADJUST] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                                     _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  _______,
