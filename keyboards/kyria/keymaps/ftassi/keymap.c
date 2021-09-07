@@ -134,7 +134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 //  * |--------+------+------+------+------+------|                              |------+------+------+------+------+--------|
 //  * |Monitor | WS6  | WS7  | WS8  | WS9  | WS0  |                              | Left | Down | Up   | Right|      |   ESC  |
 //  * |--------+------+------+------+------+------+-------------.  ,-------------+------+------+------+------+------+--------|
-//  * | Shift  |Restart|     |      |      | Sett | Term | Brow |  |Resize|Orient|      |      |      |      |      |        |
+//  * | Shift  |Rest  |      |      |      | Sett | Term | Brow |  |Resize|Orient|      |      |      |      |      |        |
 //  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
 //  *                        |Layout|Files |Scratc| App  | Cmd  |  |TOGGLE|      |Move  |Float |Full  |
 //  *                        |Mode  |      |      |      |      |  |LAYER |  ?   |Scratc|      |Screen|
