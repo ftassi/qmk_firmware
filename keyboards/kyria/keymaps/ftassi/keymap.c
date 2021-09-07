@@ -57,14 +57,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * | LShift |   Z  |   X  |   C  |   V  |   B  |LShift| AltGr|  |LEADER|CAPSWRD|   N  |   M  | ,  < | . >  | /  ? |Shift- _|
  * `----------------------+------+------+------+------+------|  |------+------+------+------+------+----------------------'
  *                        | Down | Del  | Tab  | Esc  | Enter|  | I3wm | Space| Symb| Alt  |  Up  |
- *                        |Adjust|      | Numb |      |      |  | BS   |      | Tab |      |      |
+ *                        |Adjust|      | Numb |      |      |  | BS   |      | Del |      |      |
  *                        `----------------------------------'  `----------------------------------'
  */
     [_QWERTY] = LAYOUT(
       LALT_T(KC_ESC),       KC_Q,   KC_W,   KC_E,   KC_R,   KC_T,                                         KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    LALT_T(KC_BSLS),
       LCTL_T(KC_BSPC),   KC_A,   KC_S,   KC_D,   KC_F,   KC_G,                                         KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, LCTL_T(KC_QUOT),
       KC_LSFT, KC_Z,   KC_X,   KC_C,   KC_V,   KC_B,   KC_LSFT, OSM(MOD_RALT) , KC_LEAD, CAPSWRD, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, RSFT_T(KC_MINS),
-              LT(_ADJUST, KC_DOWN), KC_DEL, LT(_NUMBERS, KC_TAB), KC_ESC, KC_ENT, LT(_I3WM, KC_BSPC) , KC_SPC, LT(_SYMBOL, KC_TAB), KC_LALT, KC_UP
+              LT(_ADJUST, KC_DOWN), KC_DEL, LT(_NUMBERS, KC_TAB), KC_ESC, KC_ENT, LT(_I3WM, KC_BSPC) , KC_SPC, LT(_SYMBOL, KC_DEL), KC_LALT, KC_UP
       ),
 /*
  * Lower Layer: Symbols
